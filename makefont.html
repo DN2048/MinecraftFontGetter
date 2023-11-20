@@ -166,7 +166,7 @@
     }
 
     async function extractCharMap(zip) {
-        //get char map from default.txt, or from predefined maps if it doesn't exist
+        // Get char map from default.txt or from predefined maps if it doesn't exist
         console.log("Finding character map")
         var cp437 = [
             "\u0000\u263a\u263b\u2665\u2666\u2663\u2660\u2022\u25d8\u25cb\u25d9\u2642\u2640\u266a\u266b\u263c",
@@ -188,10 +188,11 @@
         ], cp437m = [
             "\u00c0\u00c1\u00c2\u00c8\u00ca\u00cb\u00cd\u00d3\u00d4\u00d5\u00da\u00df\u0101\u014d\u011f\u0130",
             "\u0131\u0152\u0153\u015e\u015f\u0174\u0175\u017e\u00ea"
-        ].concat(cp437.slice(2));
+        ].concat(cp437);
 
         if (zip.file("pack.mcmeta")) { //get pack version from pack.mcmeta if it exists
             var version = JSON.parse(await zip.file("pack.mcmeta").async("string")).pack.pack_format
+            console.log("pack.meta version " + version);
             if (version >= 4) { //default.json mapping exists
                 if (version > 6) { console.log("Future version detected. Continuing with unknown support.") }
                 return JSON.parse(await zip.file("assets/minecraft/font/default.json").async("string")).providers
@@ -210,7 +211,7 @@
     }
 </script>
 
-<h1>McJar Font Getter</h1>
+<h1>Minecraft Font Getter</h1>
 Extracts the "Mojangles" font from a Minecraft .jar file<br><br>
 <input type="checkbox" checked id="centerA"><label for="centerA">Center-align glyphs (uncheck for left-align)</label><br>
 <label for="minecraftJar">Choose a Minecraft .jar file</label>
