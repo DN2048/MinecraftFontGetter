@@ -14,8 +14,8 @@ replacing `username_here` with your username. May include hidden files.
 
 Alternatively, go to the resource pack folder's parent directory. The resource pack folder is accessible from Minecraft's resource pack options.
 
-Once you are in the Minecraft directory, navigate to `/versions/1.16.1/1.16.1.jar`  
-replacing `1.16.1` with the Minecraft version you want to extract the font from.
+Once you are in the Minecraft directory, navigate to `/versions/1.20.1/1.20.1.jar`  
+replacing `1.20.1` with the Minecraft version you want to extract the font from.
 
 This is the Minecraft .jar file.
 
