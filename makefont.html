@@ -203,6 +203,8 @@
             } else { //pack.mcmeta exists, modified cp437
                 return [{ type: "bitmap", file: "minecraft:font/ascii.png", ascent: 7, chars: cp437m }]
             }
+        } else if (zip.file("assets/minecraft/font/include/default.json")) { //pack.mcmeta does not exist, does font default json?
+            return JSON.parse(await zip.file("assets/minecraft/font/include/default.json").async("string")).providers
         } else if (zip.file("assets/minecraft/textures/font/ascii.png")) { //pack.mcmeta does not exist, modified cp437
             return [{ type: "bitmap", file: "minecraft:font/ascii.png", ascent: 7, chars: cp437m }]
         } else if (zip.file("font/default.png")) { //pack.mcmeta does not exist, cp437
