@@ -68,17 +68,17 @@
                         for (var k = 0, l = 0; k < j % charsPerRow; k++) {
                             if (currentRow.codePointAt(k + l) > 0xffff) l++ 
                         } // Finds jth code point, not jth word
-                        var currentcodepoint = currentRow.codePointAt(k + l) || 0;//sets current code point
-                        if (!(glyphs[currentcodepoint])) { // only add char if not already defined
+                        var currentCodePoint = currentRow.codePointAt(k + l) || 0; // Sets current code point
+                        if (!(glyphs[currentCodePoint])) { // only add char if not already defined
                             totalGlyphCount++
                             var glyphPath = new opentype.Path();
                             var l = [] // l will keep track of the rightmost pixel of the char
                             var topLeftPixel = ((j % charsPerRow) * width) + (Math.floor(j / charsPerRow) * image.width * height)
                             for (var k = 0; k < height * width; k++) { // k cycles through the pixels in the char
-                                var currentpixel = (Math.floor(k / width) * image.width) + (k % width) + topLeftPixel //set currentpixel to pixel in image
-                                l[k % width] = (l[k % width] || 0) + imagemap.getUint8(currentpixel * 4 + 3) //add alpha value to current column in l
-                                if (imagemap.getUint8(currentpixel * 4 + 3) > 127) { // if pixel is visible enough to be in font
-                                    // convert k to ttf coordinate system
+                                var currentPixel = (Math.floor(k / width) * image.width) + (k % width) + topLeftPixel // set currentpixel to pixel in image
+                                l[k % width] = (l[k % width] || 0) + imagemap.getUint8(currentPixel * 4 + 3) // add alpha value to current column in l
+                                if (imagemap.getUint8(currentPixel * 4 + 3) > 127) { // if pixel is visible enough to be in font
+                                    // Convert k to ttf coordinate system
                                     var ttfy = ((ascent * (commonMultiple / providerscale)) - (Math.floor(k / width))) * amplifier * providerscale, ttfx = ((k % width) * amplifier * providerscale) + (!!centerA * (amplifier / 2) * providerscale)
                                     var leftLine = glyphPath.commands.findIndex((ele, ind, arr) => ind + 1 < arr.length && ele.x == ttfx && ele.y >= ttfy && arr[ind + 1].x == ttfx && arr[ind + 1].y < ttfy) //check if a line is on the left
                                     if (leftLine > -1) {
@@ -86,12 +86,12 @@
                                         glyphPath.commands.splice(leftLine + (glyphPath.commands[leftLine].y != ttfy), 1 + (glyphPath.commands[leftLine].y == ttfy), ...([{ type: "L", x: ttfx, y: ttfy }, { type: "L", x: ttfx + (amplifier * providerscale), y: ttfy }, { type: "L", x: ttfx + (amplifier * providerscale), y: ttfy - (amplifier * providerscale) }].slice(glyphPath.commands[leftLine].y == ttfy)))
                                         //check if line on top
                                         var topLine = glyphPath.commands.findIndex((ele, ind, arr) => ind + 1 < arr.length && ele.y == ttfy && ele.x > ttfx && arr[ind + 1].y == ttfy && arr[ind + 1].x <= ttfx)
-                                        if (topLine > -1) { //this is the tricky bit
+                                        if (topLine > -1) { // this is the tricky bit
                                             for (var leftClumpStart = leftLine; leftClumpStart > -1; leftClumpStart--)
                                                 if (glyphPath.commands[leftClumpStart].type == "M") break;
                                             for (var leftClumpEnd = leftLine; leftClumpEnd < glyphPath.commands.length; leftClumpEnd++)
                                                 if (glyphPath.commands[leftClumpEnd].type == "Z") break;
-                                            if (topLine > leftClumpStart && topLine < leftClumpEnd) { //forms a loop
+                                            if (topLine > leftClumpStart && topLine < leftClumpEnd) { // forms a loop
                                                 //if (topLine<leftLine) { //path start is outside the loop
                                                 var absorb = glyphPath.commands.splice(topLine + 1, leftLine - topLine - 1);
                                                 absorb[0].type = "M"
@@ -99,12 +99,12 @@
                                                 glyphPath.commands.unshift(...absorb)
                                                 topLine += absorb.length
                                             } else { //no loop
-                                                if (topLine < leftClumpEnd) { //top clump is earlier
+                                                if (topLine < leftClumpEnd) { // top clump is earlier
                                                     var absorb = [glyphPath.commands.splice(leftLine, 1 + leftClumpEnd - leftLine), glyphPath.commands.splice(leftClumpStart, leftLine - leftClumpStart)]
                                                     absorb[0].pop()
                                                     absorb[1][0].type = "L"
                                                     glyphPath.commands.splice(topLine + 1, 0, ...(absorb[0].concat(absorb[1])))
-                                                } else { //left clump is earlier; merge top clump into left
+                                                } else { // left clump is earlier; merge top clump into left
                                                     for (var topClumpStart = topLine; topClumpStart > -1; topClumpStart--)
                                                     if (glyphPath.commands[topClumpStart].type == "M") break;
                                                     for (var topClumpEnd = topLine; topClumpEnd < glyphPath.commands.length; topClumpEnd++)
@@ -134,32 +134,41 @@
 
                             // Find rightmost pixel and create glyph (make exception for blank glyphs)
                             var k = l.length - 1;
-                            while (l[k] == 0 && k > -1) k-- //k is set to rightmost column with pixels
-                            var l = currentcodepoint.toString(16); while (l.length < 4) l = "0" + l; //prepare unicode code for current code point
-                            glyphs[currentcodepoint] = new opentype.Glyph({
+                            while (l[k] == 0 && k > -1) k-- // k is set to rightmost column with pixels
+                            var l = currentCodePoint.toString(16); while (l.length < 4) l = "0" + l; //prepare unicode code for current code point
+                            glyphs[currentCodePoint] = new opentype.Glyph({
                                 name: "uni" + l,
-                                unicode: currentcodepoint,
-                                advanceWidth: (k == -1 ? (4 * commonMultiple) : ((k + 2) * providerscale)) * amplifier, //width is set to 4 if character is empty
+                                unicode: currentCodePoint,
+                                advanceWidth: (k == -1 ? (4 * commonMultiple) : ((k + 2) * providerscale)) * amplifier, // width is set to 4 if character is empty
                                 path: glyphPath
                             })
                             //console.log("Added glyph "+String.fromCodePoint(currentcodepoint))
-                        } else { console.log("Skipped duplicate glyph " + String.fromCodePoint(currentcodepoint)) }
+                        } else { console.log("Skipped duplicate glyph " + String.fromCodePoint(currentCodePoint)) }
                     }
                 } else { console.log("Skipping provider " + providers[i].type) }
             }
 
             // Turn glyphs object into an array
             var finalGlyphArray = []
-            for (j in glyphs) { finalGlyphArray.push(glyphs[j]) }
-            //create final font
+            for (j in glyphs) {
+                finalGlyphArray.push(glyphs[j])
+            }
+            // Create final font
+            var fontName = "Mojangles"
+            var alignment = !centerA ? "left-aligned" : "center-aligned"
             var finalFont = new opentype.Font({
-                familyName: "Mojangles" + (!centerA ? " left-aligned" : ""),
-                styleName: blob.name.split(".").slice(0, -1).join("."),
+                familyName: fontName,
+                styleName: alignment,
+                postScriptName: fontName + "-" + alignment, // Note: can't have more than 31 chars
                 unitsPerEm: 9 * commonMultiple * amplifier,
                 ascender: 8 * commonMultiple * amplifier,
                 descender: -1 * commonMultiple * amplifier,
-                glyphs: finalGlyphArray //temp test of only null and "
+                glyphs: finalGlyphArray,
+                version: blob.name.split(".").slice(0,-1).join("."),
+                copyright: "For more information visit https://github.com/DN2048/MinecraftFontGetter",
+                description: "Font extracted using MinecraftFontGetter - https://github.com/DN2048/MinecraftFontGetter"
             });
+
             console.log(totalGlyphCount + " glyphs")
             finalFont.download()
             document.getElementById("st").innerText = ""
@@ -214,11 +223,12 @@
         }
     }
 </script>
+
 <h1>Minecraft Font Getter</h1>
 Extracts the "Mojangles" font from a Minecraft .jar file<br><br>
-<input type="checkbox" checked id="centerA"><label for="centerA">Center-align glyphs (uncheck for left-align)</label><br>
+<input type="checkbox" id="centerA"><label for="centerA">Center-align glyphs (uncheck for left-align)</label><br>
 <label for="minecraftJar">Choose a Minecraft .jar file</label>
 <input id="minecraftJar" type="file" onChange='extractJar(this.files[0],2,document.getElementById("centerA").checked)'><span id="st"></span><br><br>
 Components are used under <a href="LICENSE">MIT License</a>.<br>
 See the <a href="README.md">readme</a> for instructions on getting a Minecraft .jar file.<br>
-Version 1.5. Check the <a href="CHANGELOG">changelog</a> for changes.
+Version 1.6 | Check the <a href="CHANGELOG">changelog</a> for changes.

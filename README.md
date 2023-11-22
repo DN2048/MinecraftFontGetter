@@ -1,7 +1,9 @@
-# mcjarfontgetter
+# Minecraft Font Getter
 
 Extracts the "Mojangles" font from a Minecraft .jar file.  
-To use, open makefont.html in a browser (as long as it isn't Internet Explorer or Microsoft Edge) and choose the Minecraft .jar file in the file input.  
+To use, open makefont.html in a browser (as long as it isn't Internet Explorer or Microsoft Edge) and choose the Minecraft .jar file in the file input.
+
+Project forked from [mincerafter42/mcjarfontgetter](https://github.com/mincerafter42/mcjarfontgetter) and updated to support version 1.20.
 
 ## How to get a Minecraft .jar file
 
@@ -14,8 +16,8 @@ replacing `username_here` with your username. May include hidden files.
 
 Alternatively, go to the resource pack folder's parent directory. The resource pack folder is accessible from Minecraft's resource pack options.
 
-Once you are in the Minecraft directory, navigate to `/versions/1.16.1/1.16.1.jar`  
-replacing `1.16.1` with the Minecraft version you want to extract the font from.
+Once you are in the Minecraft directory, navigate to `/versions/1.20.1/1.20.1.jar`  
+replacing `1.20.1` with the Minecraft version you want to extract the font from.
 
 This is the Minecraft .jar file.
 
